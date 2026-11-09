@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "mkdir -p public && cp -r assets public/assets && find public -name '*.php' -delete && find public -name '.htaccess' -delete",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.9.0",
+      "includeFiles": "{inc,data,admin,assets}/**"
+    }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index.php" }]
+}

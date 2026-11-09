@@ -1,0 +1,6 @@
+# Anciennes adresses .html -> pages PHP
+RewriteEngine On
+RewriteRule ^(index|notre-histoire|nos-produits|commander|contact)\.html$ $1.php [L]
+DirectoryIndex index.php
+# Fichiers internes non accessibles
+RedirectMatch 403 ^/(.*/)?(inc|data)/

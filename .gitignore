@@ -1,0 +1,15 @@
+# Données sensibles / générées par l'administration
+data/admin.json
+data/login_attempts.json
+data/*.tmp
+data/pages/*.tmp
+# Sources de travail (maquette Stitch et photos brutes)
+macket/
+Photo_Tech/
+# Divers
+public/
+.vercel/
+*.tmp
+.env*
+.DS_Store
+Thumbs.db

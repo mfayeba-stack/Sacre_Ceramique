@@ -1,0 +1,196 @@
+[
+  {
+    "id": "p1",
+    "image": "assets/img/encensoir-traditionnel.jpg",
+    "badge": "Pièce Signature",
+    "tag": "Terre Cuite Pure",
+    "kicker": "Art ancestral • Dakar",
+    "rating": "4.9",
+    "title": "Encensoir Majestueux Terracotta",
+    "description": "Poterie ajourée en terre cuite locale naturelle. Ses perforations en gouttes favorisent un tirage d'air optimal pour la diffusion suave et prolongée du thiouraye traditionnel.",
+    "specs": [
+      [
+        "Matière",
+        "Argile rouge réfractaire"
+      ],
+      [
+        "Hauteur approx.",
+        "22 cm • Ø 18 cm"
+      ],
+      [
+        "Résistance braise",
+        "Haute température (>800°C)"
+      ]
+    ],
+    "price": 18500,
+    "priceFrom": false,
+    "status": "En stock atelier",
+    "visible": true,
+    "stock": "ok",
+    "categories": [
+      "traditionnel"
+    ]
+  },
+  {
+    "id": "p2",
+    "image": "assets/img/coupes-sur-pied.jpg",
+    "badge": "Collection Coupe",
+    "tag": "Or & Métal brossé",
+    "kicker": "Rituel & Présentation",
+    "rating": "5.0",
+    "title": "Coupe sur Pied Décorative & Rituelle",
+    "description": "Élégante vasque élancée sur piedouche sculpté. Disponible en finitions dorée, argent satiné ou bronze patiné pour accueillir braises et résines avec panache.",
+    "specs": [
+      [
+        "Finitions",
+        "Doré royal, Argenté, Cuivré"
+      ],
+      [
+        "Hauteur",
+        "14 cm • Large col ouvert"
+      ],
+      [
+        "Usage",
+        "Thiouraye sec & bakhoor"
+      ]
+    ],
+    "price": 12000,
+    "priceFrom": false,
+    "status": "Personnalisable",
+    "visible": true,
+    "stock": "ok",
+    "categories": [
+      "coupes",
+      "metallise"
+    ]
+  },
+  {
+    "id": "p3",
+    "image": "assets/img/gamme-coloree.jpg",
+    "badge": "6 Teintes Disponibles",
+    "tag": "Émail Cuit",
+    "kicker": "Collection Colorée",
+    "rating": "4.8",
+    "title": "Encensoir Festif Émaillé",
+    "description": "Dôme ventru d’inspiration traditionnelle orné de calibres de perforations régulières. Finition laquée et émaillée pour illuminer tables basses et salons feutrés.",
+    "specs": [
+      [
+        "Coloris au choix",
+        "Ocre, Émeraude, Rubis, Noir, Blanc"
+      ],
+      [
+        "Diamètre",
+        "16 cm avec calotte amovible"
+      ],
+      [
+        "Protection",
+        "Double engobe isolant"
+      ]
+    ],
+    "price": 15000,
+    "priceFrom": false,
+    "status": "Choix couleur",
+    "visible": true,
+    "stock": "ok",
+    "categories": [
+      "traditionnel"
+    ]
+  },
+  {
+    "id": "p4",
+    "image": "assets/img/hors-serie.jpg",
+    "badge": "Hors Série • Édition Limitée",
+    "tag": "Piédestal Doré",
+    "kicker": "Haute Céramique Rituelle",
+    "rating": "5.0",
+    "title": "Duo Prestige Hors Série",
+    "description": "Courbures ondulées en collerette royale, fût sphérique et somptueux piédestal doré à l'or antique. Existe en vert céladon méditatif ou noir impérial.",
+    "specs": [
+      [
+        "Édition",
+        "Série numérotée limitée"
+      ],
+      [
+        "Hauteur totale",
+        "26 cm avec flèche d'or"
+      ],
+      [
+        "Finition",
+        "Céladon satiné ou Noir nuit"
+      ]
+    ],
+    "price": 28000,
+    "priceFrom": false,
+    "status": "Faible stock",
+    "visible": true,
+    "stock": "low",
+    "categories": [
+      "hors-serie",
+      "metallise"
+    ]
+  },
+  {
+    "id": "p5",
+    "image": "assets/img/tailles-couleurs.jpg",
+    "badge": "Formats Multiples",
+    "tag": "Avec Poignées",
+    "kicker": "Usage Quotidien & Cadeau",
+    "rating": "4.9",
+    "title": "Collection Miniature & Moyenne",
+    "description": "Brûleurs d’encens compacts dotés d’oreilles latérales de manipulation pour transporter la fumée bienfaisante dans chaque recoin de la demeure sans risque thermique.",
+    "specs": [
+      [
+        "Formats",
+        "Petit (9cm), Moyen (14cm), Grand (19cm)"
+      ],
+      [
+        "Maniabilité",
+        "Double anse ergonomique"
+      ],
+      [
+        "Couleurs",
+        "Ivoire, Ébène, Marron glacé, Cuivre"
+      ]
+    ],
+    "price": 8500,
+    "priceFrom": true,
+    "status": "En stock",
+    "visible": true,
+    "stock": "ok",
+    "categories": [
+      "traditionnel"
+    ]
+  },
+  {
+    "id": "p6",
+    "image": "assets/img/trio-metal.jpg",
+    "badge": "Design Amphore",
+    "tag": "Étoiles Sculptées",
+    "kicker": "Métallisé & Cannelé",
+    "rating": "5.0",
+    "title": "Encensoir Goutte d'Or & d'Argent",
+    "description": "Silhouette conique fluide en goutte céleste. Ses fines stries artisanales et ses orifices étoilés laissent s’échapper des volutes d’encens d’une grâce poétique rare.",
+    "specs": [
+      [
+        "Structure",
+        "Terre cuite cannelée main"
+      ],
+      [
+        "Perforations",
+        "Motifs constellations stellaires"
+      ],
+      [
+        "Revêtement",
+        "Or solaire, Argent lunaire, Bronze"
+      ]
+    ],
+    "price": 22000,
+    "priceFrom": false,
+    "status": "Coup de cœur",
+    "visible": true,
+    "stock": "ok",
+    "categories": [
+      "metallise"
+    ]
+  }
+]
