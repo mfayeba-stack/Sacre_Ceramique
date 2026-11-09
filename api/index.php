@@ -40,15 +40,22 @@ if (preg_match('#^assets/img/uploads/([a-f0-9]{20})\.(jpg|png|webp)$#', $path, $
     exit;
 }
 
-if (str_starts_with($path, 'admin/') && !($storeOn && in_array($path, $adminPages, true))) {
+// L'admin n'est exposé que si le stockage existe ET qu'un mot de passe est déjà défini ou qu'un jeton de configuration (32 car. min.) est présent.
+$adminReady = false;
+if ($storeOn && str_starts_with($path, 'admin/')) {
+    require_once $root . '/inc/storage.php';
+    $adminReady = strlen((string)getenv('ADMIN_SETUP_TOKEN')) >= 32 || store_get('data/admin.json') !== null;
+}
+
+if (str_starts_with($path, 'admin/') && !($adminReady && in_array($path, $adminPages, true))) {
     http_response_code(503);
     header('Content-Type: text/html; charset=utf-8');
     echo '<!DOCTYPE html><meta charset="utf-8"><title>Administration</title><body style="font-family:sans-serif;max-width:40rem;margin:4rem auto;padding:0 1rem">'
-        . "<h1>Administration indisponible</h1><p>Le stockage persistant (Vercel Blob) n'est pas configuré sur ce déploiement.</p></body>";
+        . "<h1>Administration indisponible</h1><p>Configuration incomplète : stockage Vercel Blob absent, ou variable ADMIN_SETUP_TOKEN (32 caractères minimum) non définie.</p></body>";
     exit;
 }
 
-$allowed = in_array($path, $pages, true) || $path === 'assets/js/tailwind-config.php' || ($storeOn && in_array($path, $adminPages, true));
+$allowed = in_array($path, $pages, true) || $path === 'assets/js/tailwind-config.php' || ($adminReady && in_array($path, $adminPages, true));
 
 if (!$allowed || !is_file($root . '/' . $path)) {
     http_response_code(404);
