@@ -9,8 +9,25 @@ function e(mixed $v): string
     return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+require_once __DIR__ . '/storage.php';
+
+if (store_enabled()) {
+    session_set_save_handler(new BlobSessionHandler(), true);
+}
+
+/** Lit data/<nom>.json : depuis le store (Vercel) puis, à défaut, depuis le fichier versionné (valeurs initiales). */
 function load_json(string $name, array $default = []): array
 {
+    static $cache = [];
+    if (store_enabled()) {
+        if (!array_key_exists($name, $cache)) {
+            $raw = store_get('data/' . $name . '.json');
+            $cache[$name] = $raw !== null ? json_decode($raw, true) : null;
+        }
+        if (is_array($cache[$name])) {
+            return $cache[$name];
+        }
+    }
     $file = DATA_DIR . '/' . $name . '.json';
     if (!is_file($file)) {
         return $default;
@@ -19,16 +36,34 @@ function load_json(string $name, array $default = []): array
     return is_array($data) ? $data : $default;
 }
 
-/** Écriture atomique (fichier temporaire + rename) avec verrou. */
-function save_json(string $name, array $data): bool
+/** Écrit data/<nom>.json : dans le store (Vercel) ou sur le disque (local), de façon atomique. */
+function save_json(string $name, array|object $data): bool
 {
-    $file = DATA_DIR . '/' . $name . '.json';
-    $tmp = $file . '.' . bin2hex(random_bytes(4)) . '.tmp';
     $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    if ($json === false || file_put_contents($tmp, $json, LOCK_EX) === false) {
+    if ($json === false) {
+        return false;
+    }
+    if (store_enabled()) {
+        return store_put('data/' . $name . '.json', $json, 'application/json');
+    }
+    $file = DATA_DIR . '/' . $name . '.json';
+    if (!is_dir(dirname($file))) {
+        mkdir(dirname($file), 0755, true);
+    }
+    $tmp = $file . '.' . bin2hex(random_bytes(4)) . '.tmp';
+    if (file_put_contents($tmp, $json, LOCK_EX) === false) {
         return false;
     }
     return rename($tmp, $file);
+}
+
+function delete_json(string $name): bool
+{
+    if (store_enabled()) {
+        return store_delete('data/' . $name . '.json');
+    }
+    $file = DATA_DIR . '/' . $name . '.json';
+    return !is_file($file) || unlink($file);
 }
 
 function default_settings(): array
@@ -85,6 +120,11 @@ function fcfa(int $n): string
 function eur(int $n, float $rate): string
 {
     return '~ ' . number_format((int)round($n / max($rate, 0.0001)), 0, ',', ' ') . ' €';
+}
+
+// Sur Vercel, le CDN met en cache les pages publiques 30 s (les pages admin / édition envoient no-store).
+if (getenv('VERCEL') && !headers_sent()) {
+    header('Cache-Control: public, max-age=0, s-maxage=30, stale-while-revalidate=300');
 }
 
 $S = load_settings();

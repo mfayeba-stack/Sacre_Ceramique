@@ -19,7 +19,7 @@ if (strlen($setupToken) < 32) {
     $setupToken = ''; // jeton trop court : ignoré
 }
 // admin.json présent mais illisible : on refuse de réinitialiser le mot de passe
-$brokenAdmin = $setup && is_file(DATA_DIR . '/admin.json');
+$brokenAdmin = $setup && (is_file(DATA_DIR . '/admin.json') || (store_enabled() && store_get('data/admin.json') !== null));
 $setupAllowed = !$brokenAdmin && ($isLocal || $setupToken !== '');
 $needToken = !$isLocal;
 
@@ -42,10 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($p1 !== $p2) {
             $error = 'Les deux mots de passe ne correspondent pas.';
         } else {
-            save_json('admin', ['hash' => password_hash($p1, PASSWORD_DEFAULT), 'created' => date('c')]);
-            session_regenerate_id(true);
-            $_SESSION['admin'] = true;
-            redirect('index.php');
+            if (!save_json('admin', ['hash' => password_hash($p1, PASSWORD_DEFAULT), 'created' => date('c')])) {
+                $error = "Impossible d'enregistrer le mot de passe : stockage indisponible (vérifiez le store Vercel Blob).";
+            } else {
+                session_regenerate_id(true);
+                $_SESSION['admin'] = true;
+                redirect('index.php');
+            }
         }
     } elseif (login_blocked()) {
         $error = 'Trop de tentatives. Réessayez dans 15 minutes.';

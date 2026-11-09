@@ -14,7 +14,7 @@ function delete_upload_if_orphan(string $path, array $products): void
             return;
         }
     }
-    @unlink(UPLOAD_DIR . '/' . basename($path));
+    delete_stored_media($path);
 }
 
 function clip(mixed $v, int $max): string

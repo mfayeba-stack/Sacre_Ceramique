@@ -117,9 +117,8 @@ function cms_load_overrides(string $page): array
     if (!isset(CMS_PAGES[$page])) {
         return cms_empty_overrides();
     }
-    $f = DATA_DIR . '/pages/' . $page . '.json';
-    $d = is_file($f) ? json_decode((string)file_get_contents($f), true) : null;
-    return is_array($d) ? array_replace(cms_empty_overrides(), $d) : cms_empty_overrides();
+    $d = load_json('pages/' . $page);
+    return $d ? array_replace(cms_empty_overrides(), $d) : cms_empty_overrides();
 }
 
 /** Les tableaux associatifs à clés numériques ("0", "0.1"…) doivent rester des objets JSON. */
@@ -136,18 +135,10 @@ function cms_save_overrides(string $page, array $ov): bool
     if (!isset(CMS_PAGES[$page])) {
         return false;
     }
-    if (!is_dir(DATA_DIR . '/pages')) {
-        mkdir(DATA_DIR . '/pages', 0755, true);
+    if (!$ov['texts'] && !$ov['images'] && !$ov['hidden'] && !$ov['order']) {
+        return delete_json('pages/' . $page) || true;
     }
-    $ok = true;
-    $file = DATA_DIR . '/pages/' . $page . '.json';
-    $empty = !$ov['texts'] && !$ov['images'] && !$ov['hidden'] && !$ov['order'];
-    if ($empty) {
-        return !is_file($file) || unlink($file);
-    }
-    $tmp = $file . '.' . bin2hex(random_bytes(4)) . '.tmp';
-    $json = json_encode(cms_as_objects($ov), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    return $json !== false && file_put_contents($tmp, $json, LOCK_EX) !== false && rename($tmp, $file) && $ok;
+    return save_json('pages/' . $page, cms_as_objects($ov));
 }
 
 /** Valide l'état envoyé par l'éditeur ; ne garde que des données bien formées. */
@@ -434,6 +425,7 @@ function cms_render(string $html, string $page): string
 
     if ($edit) {
         header('Cache-Control: no-store');
+        $html = str_replace('assets/js/tailwind-config.php', 'assets/js/tailwind-config.php?t=' . time(), $html);
         $state = json_encode(['page' => $page, 'ov' => cms_as_objects($ov)], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
         $inject = '<style id="sc-style">'
             . '[data-sc-hid]{opacity:.28!important;outline:2px dashed #b45309!important;outline-offset:-2px}'

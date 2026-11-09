@@ -25,6 +25,14 @@ function upload_image(array $file, string &$err): ?string
         return null;
     }
     $name = bin2hex(random_bytes(10)) . '.' . $ext;
+    if (store_enabled()) {
+        // Vercel : stockage persistant ; l'image est servie par /assets/img/uploads/<nom> (voir api/index.php)
+        if (!store_put('media/' . $name, (string)file_get_contents($file['tmp_name']), $mime)) {
+            $err = "Impossible d'enregistrer l'image dans le stockage.";
+            return null;
+        }
+        return UPLOAD_URL . $name;
+    }
     if (!is_dir(UPLOAD_DIR)) {
         mkdir(UPLOAD_DIR, 0755, true);
     }
@@ -44,5 +52,22 @@ function media_library(): array
             $out[] = $dir . '/' . basename($f);
         }
     }
+    if (store_enabled()) {
+        foreach (store_list('media/') as $p) {
+            if (preg_match('/^media\/[a-f0-9]{20}\.(jpg|png|webp)$/', $p)) {
+                $out[] = UPLOAD_URL . substr($p, 6);
+            }
+        }
+    }
     return $out;
+}
+
+function delete_stored_media(string $path): void
+{
+    $name = basename($path);
+    if (store_enabled()) {
+        store_delete('media/' . $name);
+    } else {
+        @unlink(UPLOAD_DIR . '/' . $name);
+    }
 }

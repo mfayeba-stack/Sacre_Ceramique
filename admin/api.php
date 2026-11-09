@@ -23,6 +23,19 @@ if ($action === 'media_list' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     out(['ok' => true, 'images' => media_library()]);
 }
 
+if ($action === 'store_check' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Diagnostic du stockage (admin connecté uniquement)
+    $v = 'ok-' . bin2hex(random_bytes(4));
+    $res = ['enabled' => store_enabled()];
+    if (store_enabled()) {
+        $res['put'] = store_put('selftest/ping.txt', $v, 'text/plain');
+        $res['get'] = store_get('selftest/ping.txt') === $v;
+        $res['list'] = in_array('selftest/ping.txt', store_list('selftest/'), true);
+        $res['delete'] = store_delete('selftest/ping.txt');
+    }
+    out(['ok' => true] + $res);
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     out(['ok' => false, 'error' => 'Méthode invalide.'], 405);
 }

@@ -9,5 +9,13 @@
       "includeFiles": "{inc,data,admin,assets}/**"
     }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/index.php" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.php"
+    }
+  ],
+  "regions": [
+    "cdg1"
+  ]
 }
