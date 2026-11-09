@@ -70,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="post" class="w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(61,36,28,0.12)] p-8 space-y-4">
   <img src="../assets/img/logo.png" alt="Le Sacré Céramique" class="h-20 mx-auto mix-blend-multiply">
   <h1 class="font-headline-sm text-headline-sm text-primary text-center"><?= $setup ? 'Première configuration' : 'Espace administration' ?></h1>
+  <?php if ($setup && !$setupAllowed && !$brokenAdmin): ?><p role="alert" class="px-3 py-2 rounded-lg bg-secondary-fixed text-on-secondary-fixed font-body-sm text-body-sm">Configuration initiale à distance désactivée. Ajoutez la variable d'environnement <strong>ADMIN_SETUP_TOKEN</strong> (32 caractères minimum, choisie par vous) dans Vercel, redéployez, puis revenez ici.</p><?php endif; ?>
   <?php if ($setup): ?><p class="font-body-sm text-body-sm text-on-surface-variant">Choisissez le mot de passe de l'administrateur (10 caractères minimum). Faites-le dès la mise en ligne du site.</p><?php endif; ?>
   <?php if ($error): ?><p role="alert" class="px-3 py-2 rounded-lg bg-error-container text-on-error-container font-body-sm text-body-sm"><?= e($error) ?></p><?php endif; ?>
   <?= csrf_field() ?>

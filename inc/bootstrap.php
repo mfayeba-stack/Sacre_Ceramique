@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
 
+// En production (Vercel) : jamais d'erreurs affichées dans la page (elles empêchent l'envoi des en-têtes et des sessions).
+if (getenv('VERCEL')) {
+    ini_set('display_errors', '0');
+    error_reporting(E_ALL & ~E_DEPRECATED);
+}
+
 define('ROOT', dirname(__DIR__));
 define('DATA_DIR', ROOT . '/data');
 

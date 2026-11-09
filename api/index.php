@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+ini_set('display_errors', '0');
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 /**
  * Point d'entrée Vercel (runtime vercel-php) : route toutes les requêtes vers les pages PHP du site.
  * Utilisé uniquement sur Vercel ; en local, Apache/Laragon sert directement les fichiers.

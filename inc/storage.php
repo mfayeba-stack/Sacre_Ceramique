@@ -63,7 +63,6 @@ function store_request(string $method, string $url, array $headers, ?string $bod
         }
         $res = curl_exec($ch);
         $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        curl_close($ch);
         return [$code, $res === false ? '' : (string)$res];
     }
     $ctx = stream_context_create(['http' => [
