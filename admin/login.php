@@ -5,18 +5,34 @@ require __DIR__ . '/_boot.php';
 $setup = admin_hash() === null;
 $error = '';
 
-// Première configuration : réservée au poste local, ou à quiconque connaît le jeton ADMIN_SETUP_TOKEN (variable d'environnement).
+// Première configuration : poste local direct (sans proxy) ou jeton ADMIN_SETUP_TOKEN (32 caractères minimum).
 $ip = $_SERVER['REMOTE_ADDR'] ?? '';
-$isLocal = in_array($ip, ['127.0.0.1', '::1'], true);
+$proxied = false;
+foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED', 'HTTP_X_REAL_IP', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_HOST'] as $h) {
+    if (!empty($_SERVER[$h])) {
+        $proxied = true;
+    }
+}
+$isLocal = !$proxied && !getenv('VERCEL') && in_array($ip, ['127.0.0.1', '::1'], true);
 $setupToken = (string)(getenv('ADMIN_SETUP_TOKEN') ?: '');
-$setupAllowed = $isLocal || $setupToken !== '';
+if (strlen($setupToken) < 32) {
+    $setupToken = ''; // jeton trop court : ignoré
+}
+// admin.json présent mais illisible : on refuse de réinitialiser le mot de passe
+$brokenAdmin = $setup && is_file(DATA_DIR . '/admin.json');
+$setupAllowed = !$brokenAdmin && ($isLocal || $setupToken !== '');
 $needToken = !$isLocal;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
-    if ($setup && !$setupAllowed) {
-        $error = 'Configuration initiale impossible à distance : faites-la en local, ou définissez la variable ADMIN_SETUP_TOKEN sur le serveur.';
+    if ($setup && $brokenAdmin) {
+        $error = 'Fichier data/admin.json illisible : supprimez-le manuellement sur le serveur pour relancer la configuration.';
+    } elseif ($setup && !$setupAllowed) {
+        $error = 'Configuration initiale impossible à distance : faites-la en local, ou définissez ADMIN_SETUP_TOKEN (32 caractères minimum) sur le serveur.';
+    } elseif ($setup && login_blocked()) {
+        $error = 'Trop de tentatives. Réessayez dans 15 minutes.';
     } elseif ($setup && $needToken && !hash_equals($setupToken, (string)($_POST['setup_token'] ?? ''))) {
+        login_failed();
         $error = 'Jeton de configuration incorrect.';
     } elseif ($setup) {
         $p1 = (string)($_POST['password'] ?? '');
