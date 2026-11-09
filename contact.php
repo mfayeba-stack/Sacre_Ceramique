@@ -6,7 +6,7 @@
 <section class="w-full bg-gradient-to-b from-surface-container-low to-surface py-space-xl">
 <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center space-y-4 max-w-3xl">
 <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary-fixed/40 text-on-secondary-fixed-variant font-label-sm text-label-sm uppercase tracking-wider">Atelier &amp; Échange</span>
-<h1 class="font-display text-display-mobile lg:text-display-mobile lg:text-display text-primary">Parlons de votre prochaine pièce</h1>
+<h1 class="font-display text-display-mobile lg:text-display text-primary">Parlons de votre prochaine pièce</h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant">Une question sur un modèle, une teinte, une livraison ou une création sur-mesure ? Écrivez-nous directement, nous répondons rapidement.</p>
 </div></section>
 <section class="w-full py-space-xl bg-surface"><div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-gutter">
