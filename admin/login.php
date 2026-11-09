@@ -5,9 +5,20 @@ require __DIR__ . '/_boot.php';
 $setup = admin_hash() === null;
 $error = '';
 
+// Première configuration : réservée au poste local, ou à quiconque connaît le jeton ADMIN_SETUP_TOKEN (variable d'environnement).
+$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+$isLocal = in_array($ip, ['127.0.0.1', '::1'], true);
+$setupToken = (string)(getenv('ADMIN_SETUP_TOKEN') ?: '');
+$setupAllowed = $isLocal || $setupToken !== '';
+$needToken = !$isLocal;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
-    if ($setup) {
+    if ($setup && !$setupAllowed) {
+        $error = 'Configuration initiale impossible à distance : faites-la en local, ou définissez la variable ADMIN_SETUP_TOKEN sur le serveur.';
+    } elseif ($setup && $needToken && !hash_equals($setupToken, (string)($_POST['setup_token'] ?? ''))) {
+        $error = 'Jeton de configuration incorrect.';
+    } elseif ($setup) {
         $p1 = (string)($_POST['password'] ?? '');
         $p2 = (string)($_POST['password2'] ?? '');
         if (mb_strlen($p1) < 10) {
@@ -44,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php if ($error): ?><p role="alert" class="px-3 py-2 rounded-lg bg-error-container text-on-error-container font-body-sm text-body-sm"><?= e($error) ?></p><?php endif; ?>
   <?= csrf_field() ?>
   <label class="block"><span class="<?= LABEL ?>">Mot de passe</span><input type="password" name="password" required autofocus autocomplete="<?= $setup ? 'new-password' : 'current-password' ?>" class="<?= INPUT ?>"></label>
+  <?php if ($setup && $needToken && $setupAllowed): ?><label class="block"><span class="<?= LABEL ?>">Jeton de configuration</span><input type="password" name="setup_token" required autocomplete="off" class="<?= INPUT ?>"></label><?php endif; ?>
   <?php if ($setup): ?><label class="block"><span class="<?= LABEL ?>">Confirmer</span><input type="password" name="password2" required autocomplete="new-password" class="<?= INPUT ?>"></label><?php endif; ?>
   <button class="<?= BTN ?> w-full"><?= $setup ? 'Créer le mot de passe' : 'Se connecter' ?></button>
 </form></body></html>

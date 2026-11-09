@@ -26,7 +26,9 @@ if ($action === 'media_list' && $_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     out(['ok' => false, 'error' => 'Méthode invalide.'], 405);
 }
-if (!hash_equals($_SESSION['csrf'] ?? '', (string)($_SERVER['HTTP_X_CSRF_TOKEN'] ?? ''))) {
+$csrfExpected = (string)($_SESSION['csrf'] ?? '');
+$csrfSent = (string)($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+if ($csrfExpected === '' || $csrfSent === '' || !hash_equals($csrfExpected, $csrfSent)) {
     out(['ok' => false, 'error' => 'Session expirée, rechargez la page.'], 400);
 }
 

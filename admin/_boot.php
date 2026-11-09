@@ -48,7 +48,8 @@ function csrf_field(): string
 function check_csrf(): void
 {
     $sent = (string)($_POST['csrf'] ?? '');
-    if (!hash_equals($_SESSION['csrf'] ?? '', $sent)) {
+    $expected = (string)($_SESSION['csrf'] ?? '');
+    if ($expected === '' || $sent === '' || !hash_equals($expected, $sent)) {
         http_response_code(400);
         exit('Session expirée ou jeton invalide. Rechargez la page.');
     }

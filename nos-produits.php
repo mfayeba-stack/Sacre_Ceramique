@@ -247,7 +247,7 @@
     }
 
     // Toggle button visuals
-    const card = document.querySelector(`.product-item[data-id="${id}"]`);
+    const card = document.querySelector('.product-item[data-id="' + CSS.escape(id) + '"]');
     if (card) {
       const btn = card.querySelector('.select-btn');
       if (selectedProducts.has(id)) {
@@ -275,21 +275,28 @@
       return;
     }
 
-    let html = '';
+    container.textContent = '';
     selectedProducts.forEach((item) => {
-      html += `
-        <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high/60 gap-3">
-          <div class="min-w-0 flex-1">
-            <h5 class="font-title-md text-title-md text-on-surface truncate">${item.title}</h5>
-            <p class="font-label-sm text-label-sm text-secondary">${item.price.toLocaleString('fr-FR')} FCFA (${item.euro})</p>
-          </div>
-          <button onclick="toggleProductSelection('${item.id}')" class="text-error hover:bg-error-container/20 p-1.5 rounded transition-colors" title="Retirer">
-            <span class="material-symbols-outlined text-[18px]">delete</span>
-          </button>
-        </div>
-      `;
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between p-3 rounded-lg bg-surface-container-high/60 gap-3';
+      const info = document.createElement('div');
+      info.className = 'min-w-0 flex-1';
+      const h5 = document.createElement('h5');
+      h5.className = 'font-title-md text-title-md text-on-surface truncate';
+      h5.textContent = item.title;
+      const p = document.createElement('p');
+      p.className = 'font-label-sm text-label-sm text-secondary';
+      p.textContent = item.price.toLocaleString('fr-FR') + ' FCFA (' + item.euro + ')';
+      info.append(h5, p);
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.title = 'Retirer';
+      del.className = 'text-error hover:bg-error-container/20 p-1.5 rounded transition-colors';
+      del.innerHTML = '<span class="material-symbols-outlined text-[18px]">delete</span>';
+      del.addEventListener('click', () => toggleProductSelection(item.id));
+      row.append(info, del);
+      container.appendChild(row);
     });
-    container.innerHTML = html;
   }
 
   function toggleSummaryDrawer() {
